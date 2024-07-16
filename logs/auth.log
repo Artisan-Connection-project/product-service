@@ -40,3 +40,196 @@
 {"level":"info","msg":"Successfully connected to database","time":"2024-07-16T03:35:00+05:00"}
 {"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T03:35:00+05:00"}
 {"level":"info","msg":"Initializing product service","time":"2024-07-16T03:35:00+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T14:14:16+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T14:14:16+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T14:14:16+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T15:58:46+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T15:58:46+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T15:58:46+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T16:00:39+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T16:00:39+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T16:00:39+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T16:10:11+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T16:10:11+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T16:10:11+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T16:12:06+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T16:12:06+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T16:12:06+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T16:28:50+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T16:28:50+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T16:28:50+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T18:04:16+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T18:04:16+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T18:04:16+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type uuid: \"{id}\"","time":"2024-07-16T18:11:06+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type uuid: \"{id}\"","time":"2024-07-16T18:12:46+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type uuid: \"{id}\"","time":"2024-07-16T18:12:47+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T18:16:12+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T18:27:07+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T18:27:07+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T18:27:07+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T18:27:09+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T18:27:11+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T18:27:11+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T18:27:11+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T18:27:11+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T18:27:20+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T18:28:38+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T18:28:38+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T18:28:38+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T18:28:44+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T18:28:44+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T18:28:45+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T18:29:37+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T18:31:41+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T18:31:41+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T18:31:41+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T18:31:43+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T18:31:46+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T18:31:46+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T18:31:46+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T18:31:46+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T18:31:46+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T18:42:49+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T18:42:49+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T18:42:49+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T18:42:50+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T18:42:50+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T18:42:50+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T18:44:27+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T18:44:27+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T18:44:27+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T18:44:30+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T18:50:40+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T18:50:40+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T18:50:40+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T19:02:54+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T19:04:06+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T19:04:06+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T19:04:06+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T19:04:09+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T19:05:17+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T19:05:17+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T19:05:17+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T19:06:11+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T19:06:11+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T19:06:11+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T19:07:02+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T19:07:02+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T19:07:02+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T19:10:44+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T19:10:44+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T19:10:44+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T20:10:05+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T20:10:05+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T20:10:05+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T20:11:33+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T20:13:25+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T20:13:25+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T20:13:25+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T20:14:09+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T20:14:09+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T20:14:09+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T20:14:58+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T20:14:58+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T20:14:58+05:00"}
+{"level":"error","msg":"failed to get product: sql: Scan called without calling Next","time":"2024-07-16T20:15:03+05:00"}
+{"level":"error","msg":"failed to get product: sql: Scan called without calling Next","time":"2024-07-16T20:16:22+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T20:18:45+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T20:18:45+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T20:18:45+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T20:18:56+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T20:18:56+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T20:18:57+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T20:18:57+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T20:18:57+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T20:19:12+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T20:19:13+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T20:19:13+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T20:19:13+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T20:19:14+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T20:20:56+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T20:22:21+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T20:24:23+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T20:30:15+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T21:14:12+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T21:14:12+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T21:14:12+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T21:16:36+05:00"}
+{"level":"fatal","msg":"Error starting gRPC server: listen tcp 127.0.0.1:50052: bind: address already in use","time":"2024-07-16T21:16:36+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T21:17:14+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T21:17:14+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T21:17:14+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T21:30:53+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T21:30:53+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T21:30:53+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T21:34:23+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T21:35:50+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T21:35:53+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T21:35:53+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T21:35:53+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T21:37:52+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T21:37:54+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-16T21:37:54+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T21:38:35+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T21:38:35+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T21:38:35+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name artisan_id in *[]*product_service.Product","time":"2024-07-16T21:38:38+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name artisan_id in *[]*product_service.Product","time":"2024-07-16T21:38:39+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name artisan_id in *[]*product_service.Product","time":"2024-07-16T21:38:39+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name artisan_id in *[]*product_service.Product","time":"2024-07-16T21:38:39+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name artisan_id in *[]*product_service.Product","time":"2024-07-16T21:38:39+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T21:38:58+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T21:38:58+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T21:38:58+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name created_at in *[]*product_service.Product","time":"2024-07-16T21:39:01+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T21:40:09+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T21:40:09+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T21:40:09+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type uuid: \"{id}\"","time":"2024-07-16T21:40:34+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type uuid: \"{id}\"","time":"2024-07-16T21:41:35+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type uuid: \"{id}\"","time":"2024-07-16T21:41:35+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type uuid: \"{id}\"","time":"2024-07-16T21:41:36+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type uuid: \"{id}\"","time":"2024-07-16T21:41:36+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type uuid: \"{id}\"","time":"2024-07-16T21:41:36+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type uuid: \"{id}\"","time":"2024-07-16T21:41:36+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type uuid: \":id\"","time":"2024-07-16T21:42:26+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type bigint: \"\"","time":"2024-07-16T21:42:55+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type uuid: \"{id}\"","time":"2024-07-16T21:46:19+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type uuid: \"{id}\"","time":"2024-07-16T21:48:59+05:00"}
+{"level":"error","msg":"failed to get product: pq: invalid input syntax for type uuid: \"{id}\"","time":"2024-07-16T21:49:14+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T22:05:39+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T22:05:39+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T22:05:39+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T22:06:33+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T22:06:33+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T22:06:33+05:00"}
+{"level":"error","msg":"user is not found: rpc error: code = Unknown desc = pq: invalid input syntax for type uuid: \"string\"","time":"2024-07-16T22:07:41+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T23:14:34+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T23:14:34+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T23:14:34+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T23:17:37+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T23:17:37+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T23:17:37+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T23:34:35+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T23:34:35+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T23:34:35+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T23:34:49+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T23:34:49+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T23:34:49+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T23:40:28+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T23:40:28+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T23:40:28+05:00"}
+{"level":"error","msg":"","time":"2024-07-16T23:40:46+05:00"}
+{"level":"error","msg":"","time":"2024-07-17T00:03:37+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T00:24:53+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T00:24:53+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T00:24:53+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-17T00:25:27+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T00:28:16+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T00:28:16+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T00:28:16+05:00"}
+{"level":"error","msg":"user is not found: rpc error: code = Unknown desc = user does not exist","time":"2024-07-17T00:34:11+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T01:08:22+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T01:08:22+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T01:08:22+05:00"}

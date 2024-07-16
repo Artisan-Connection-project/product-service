@@ -56,7 +56,7 @@ func main() {
 
 	log.Infof("Initializing product service")
 
-	productService := services.NewProductService(authClient, productRepo)
+	productService := services.NewProductService(authClient, productRepo, log)
 
 	product_service.RegisterProductServiceServer(grpcServer, productService.(product_service.ProductServiceServer))
 

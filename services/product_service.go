@@ -3,9 +3,12 @@ package services
 import (
 	"context"
 	"fmt"
+	"log"
 	auth "product-service/genproto/authentication_service"
 	pro "product-service/genproto/product_service"
 	"product-service/storage/postgres"
+
+	"github.com/sirupsen/logrus"
 )
 
 type ProductService interface {
@@ -37,19 +40,22 @@ type productService struct {
 	authService auth.AuthenticationServiceClient
 	productRepo postgres.ProductRepo
 	pro.UnimplementedProductServiceServer
+	log *logrus.Logger
 }
 
-func NewProductService(authService auth.AuthenticationServiceClient, productRepo postgres.ProductRepo) ProductService {
-	return &productService{authService: authService, productRepo: productRepo}
+func NewProductService(authService auth.AuthenticationServiceClient, productRepo postgres.ProductRepo, log *logrus.Logger) ProductService {
+	return &productService{authService: authService, productRepo: productRepo, log: log}
 }
 
 func (p *productService) AddProduct(c context.Context, product *pro.AddProductRequest) (*pro.AddProductResponse, error) {
 	// Validate user id
 	res, err := p.authService.GetUserInfo(c, &auth.GetUserInfoRequest{Id: product.ArtisanId})
 	if err != nil {
+		p.log.Errorf("user is not found: %v", err)
 		return nil, fmt.Errorf("user is not found: %v", err)
 	}
-	if res.User.UserType != "artisant" {
+	if res.User.UserType != "artisan" {
+		p.log.Errorf("user is not an artistan: %v", err)
 		return nil, fmt.Errorf("user is not an artistant")
 	}
 	return p.productRepo.AddProduct(c, product)
@@ -59,9 +65,13 @@ func (p *productService) EditProduct(c context.Context, product *pro.EditProduct
 	// Validate user id
 	res, err := p.authService.GetUserInfo(c, &auth.GetUserInfoRequest{Id: product.ArtisanId})
 	if err != nil {
+		p.log.Errorf("user is not found: %v", err)
 		return nil, fmt.Errorf("user is not found: %v", err)
 	}
-	if res.User.UserType != "artisant" {
+
+	log.Println(res)
+	if res.User.UserType != "artisan" {
+		p.log.Errorf("user is not an artistant")
 		return nil, fmt.Errorf("user is not an artistant")
 	}
 	return p.productRepo.EditProduct(c, product)
@@ -69,22 +79,33 @@ func (p *productService) EditProduct(c context.Context, product *pro.EditProduct
 
 func (p *productService) DeleteProduct(c context.Context, request *pro.DeleteProductRequest) (*pro.DeleteProductResponse, error) {
 	// Validate user id
-	res, err := p.authService.GetUserInfo(c, &auth.GetUserInfoRequest{Id: request.Id})
+	res, err := p.productRepo.DeleteProduct(c, request)
 	if err != nil {
-		return nil, fmt.Errorf("user is not found: %v", err)
+		p.log.Errorf("failed to delete product: %v", err)
+		return nil, err
 	}
-	if res.User.UserType != "admin" {
-		return nil, fmt.Errorf("user is not an admin")
-	}
-	return p.productRepo.DeleteProduct(c, request)
+	res.Message = "product deleted successfully"
+	return res, nil
 }
 
 func (p *productService) GetProduct(c context.Context, request *pro.GetProductRequest) (*pro.GetProductResponse, error) {
-	return p.productRepo.GetProduct(c, request)
+	res, err := p.productRepo.GetProduct(c, request)
+	if err != nil {
+		p.log.Errorf("failed to get product: %v", err)
+		return nil, err
+	}
+	fmt.Println(res)
+
+	return res, nil
 }
 
 func (p *productService) GetProducts(c context.Context, request *pro.GetProductsRequest) (*pro.GetProductsResponse, error) {
-	return p.productRepo.GetProducts(c, request)
+	res, err := p.productRepo.GetProducts(c, request)
+	if err != nil {
+		p.log.Errorf("failed to get product: %v", err)
+		return nil, err
+	}
+	return res, nil
 }
 
 func (p *productService) AddProductCategory(c context.Context, request *pro.AddProductCategoryRequest) (*pro.AddProductCategoryResponse, error) {
@@ -96,10 +117,26 @@ func (p *productService) AddArtisanCategory(c context.Context, request *pro.AddA
 }
 
 func (p *productService) SearchProducts(c context.Context, request *pro.SearchProductsRequest) (*pro.SearchProductsResponse, error) {
-	return p.productRepo.SearchProducts(c, request)
+	if request.Limit == "" {
+		request.Limit = "10"
+	}
+	if request.Page == "" {
+		request.Page = "1"
+	}
+	res, err := p.productRepo.SearchProducts(c, request)
+	if err != nil {
+		p.log.Error()
+	}
+	return res, nil
 }
 
 func (p *productService) AddRating(c context.Context, rating *pro.AddRatingRequest) (*pro.AddRatingResponse, error) {
+	_, err := p.authService.GetUserInfo(c, &auth.GetUserInfoRequest{Id: rating.UserId})
+	if err != nil {
+		p.log.Errorf("user is not found: %v", err)
+		return nil, fmt.Errorf("user is not found: %v", err)
+	}
+
 	return p.productRepo.AddRating(c, rating)
 }
 

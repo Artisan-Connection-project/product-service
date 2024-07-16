@@ -3,7 +3,10 @@ package postgres
 import (
 	"context"
 	"database/sql"
+	"log"
 	pro "product-service/genproto/product_service"
+	"product-service/models"
+	"strconv"
 	"time"
 
 	"github.com/google/uuid"
@@ -45,11 +48,22 @@ func NewProductRepo(db *sqlx.DB) ProductRepo {
 
 func (r *productRepo) AddProduct(c context.Context, product *pro.AddProductRequest) (*pro.AddProductResponse, error) {
 	newId := uuid.NewString()
+
 	query := `
-		INSERT INTO products (id, name, description, price, category_id, artisan_id, quantity, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+		INSERT INTO products (id, name, description, price, category_id, artisan_id, quantity)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		RETURNING 
+		id,
+		name,
+        description,
+        price,
+        category_id,
+        artisan_id,
+		quantity,
+        created_at
 	`
-	_, err := r.db.ExecContext(c, query,
+
+	row := r.db.QueryRowContext(c, query,
 		newId,
 		product.Name,
 		product.Description,
@@ -57,14 +71,14 @@ func (r *productRepo) AddProduct(c context.Context, product *pro.AddProductReque
 		product.CategoryId,
 		product.ArtisanId,
 		product.Quantity,
-		time.Now(),
-		time.Now())
+	)
 
-	if err != nil {
-		return nil, err
+	if row.Err() != nil {
+		return nil, row.Err()
 	}
-
-	return &pro.AddProductResponse{Id: newId}, nil
+	newProduct := pro.AddProductResponse{}
+	err := row.Scan(&newProduct.Id, &newProduct.Name, &newProduct.Description, &newProduct.Price, &newProduct.CategoryId, &newProduct.ArtisanId, &newProduct.Quantity, &newProduct.CreatedAt)
+	return &newProduct, err
 }
 
 func (r *productRepo) EditProduct(c context.Context, product *pro.EditProductRequest) (*pro.EditProductResponse, error) {
@@ -72,7 +86,8 @@ func (r *productRepo) EditProduct(c context.Context, product *pro.EditProductReq
 		UPDATE products SET name = $1, description = $2, price = $3, category_id = $4, artisan_id = $5, quantity = $6
 		WHERE id = $7 AND deleted_at IS NULL
 	`
-	_, err := r.db.ExecContext(c, query,
+
+	res, err := r.db.ExecContext(c, query,
 		product.Name,
 		product.Description,
 		product.Price,
@@ -81,11 +96,20 @@ func (r *productRepo) EditProduct(c context.Context, product *pro.EditProductReq
 		product.Quantity,
 		product.Id)
 
+	log.Println(product, res)
+
 	if err != nil {
 		return nil, err
 	}
 
-	return &pro.EditProductResponse{}, nil
+	return &pro.EditProductResponse{
+		Id:          product.Id,
+		Name:        product.Name,
+		Description: product.Description,
+		Price:       product.Price,
+		CategoryId:  product.CategoryId,
+		ArtisanId:   product.ArtisanId,
+	}, nil
 }
 
 func (r *productRepo) DeleteProduct(c context.Context, request *pro.DeleteProductRequest) (*pro.DeleteProductResponse, error) {
@@ -117,13 +141,25 @@ func (r *productRepo) GetProducts(c context.Context, request *pro.GetProductsReq
 }
 
 func (r *productRepo) GetProduct(c context.Context, request *pro.GetProductRequest) (*pro.GetProductResponse, error) {
-	var product pro.Product
-	err := r.db.GetContext(c, &product, `
+	var product models.Product
+
+	query := `
 		SELECT id, name, description, price, category_id, artisan_id, quantity, created_at, updated_at 
 		FROM products 
 		WHERE id = $1 AND deleted_at IS NULL
-	`, request.Id)
+	`
 
+	err := r.db.QueryRowContext(c, query, request.Id).Scan(
+		&product.Id,
+		&product.Name,
+		&product.Description,
+		&product.Price,
+		&product.CategoryId,
+		&product.ArtisanId,
+		&product.Quantity,
+		&product.CreatedAt,
+		&product.UpdatedAt,
+	)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil // Product not found
@@ -131,19 +167,53 @@ func (r *productRepo) GetProduct(c context.Context, request *pro.GetProductReque
 		return nil, err
 	}
 
-	return &pro.GetProductResponse{Product: &product}, nil
+	productRes := &pro.Product{
+		Id:          product.Id,
+		Name:        product.Name,
+		Description: product.Description,
+		Price:       product.Price,
+		CategoryId:  product.CategoryId,
+		ArtisanId:   product.ArtisanId,
+		Quantity:    product.Quantity,
+		CreatedAt:   product.CreatedAt,
+		UpdatedAt:   product.UpdatedAt,
+	}
+
+	return &pro.GetProductResponse{Product: productRes}, nil
 }
 
-func (r *productRepo) SearchProducts(c context.Context, request *pro.SearchProductsRequest) (*pro.SearchProductsResponse, error) {
+func (r *productRepo) SearchProducts(ctx context.Context, req *pro.SearchProductsRequest) (*pro.SearchProductsResponse, error) {
 	var products []*pro.Product
 	query := `
-		SELECT id, name, description, price, category_id, artisan_id, quantity, created_at, updated_at 
-		FROM products 
-		WHERE deleted_at IS NULL AND name ILIKE $1
-		LIMIT $2 OFFSET $3
-	`
-	err := r.db.SelectContext(c, &products, query, "%"+request.Query+"%", request.Limit, request.Page)
+        SELECT p.id, p.name, p.price, p.category_id
+        FROM products p
+        JOIN product_categories c ON p.category_id = c.id
+        WHERE c.name LIKE $1
+        AND p.name LIKE $2
+        AND p.price BETWEEN $3 AND $4
+        AND p.deleted_at IS NULL
+        AND c.deleted_at IS NULL
+		LIMIT $5
+		OFFSET $6
+    `
+	limit, _ := strconv.Atoi(req.Limit)
+	page, _ := strconv.Atoi(req.Page)
+	offset := (page - 1) * limit
+
+	rows, err := r.db.QueryContext(ctx, query, "%"+req.Category+"%", "%"+req.Query+"%", req.MinPrice, req.MaxPrice, limit, offset)
 	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var product pro.Product
+		if err := rows.Scan(&product.Id, &product.Name, &product.Price, &product.CategoryId); err != nil {
+			return nil, err
+		}
+		products = append(products, &product)
+	}
+	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
@@ -330,20 +400,21 @@ func (r *productRepo) AddArtisanCategory(c context.Context, request *pro.AddArti
 func (r *productRepo) AddProductCategory(c context.Context, request *pro.AddProductCategoryRequest) (*pro.AddProductCategoryResponse, error) {
 	newId := uuid.NewString()
 	query := `
-		INSERT INTO product_categories (id, name, created_at, updated_at)
-		VALUES ($1, $2, $3, $4)
+		INSERT INTO product_categories (id, name, description)
+		VALUES ($1, $2, $3)
+		RETURNING id, name, description, created_at
 	`
-	_, err := r.db.ExecContext(c, query,
-		newId,
-		request.Name,
-		time.Now(),
-		time.Now())
-
+	row := r.db.QueryRowContext(c, query, newId, request.Name, request.Description)
+	if err := row.Err(); err != nil {
+		return nil, err
+	}
+	var productCat pro.AddProductCategoryResponse
+	err := row.Scan(&productCat.Id, &productCat.Name, &productCat.Description, &productCat.CreatedAt)
 	if err != nil {
 		return nil, err
 	}
 
-	return &pro.AddProductCategoryResponse{Id: newId}, nil
+	return &productCat, nil
 }
 
 func (r *productRepo) GetStatistics(c context.Context, request *pro.GetStatisticsRequest) (*pro.GetStatisticsResponse, error) {
@@ -355,7 +426,7 @@ func (r *productRepo) GetStatistics(c context.Context, request *pro.GetStatistic
 	if err != nil {
 		return nil, err
 	}
-
+	// I ned to change this in protobuf
 	return &pro.GetStatisticsResponse{}, nil
 }
 
@@ -387,7 +458,7 @@ func (r *productRepo) GetRecommendations(c context.Context, request *pro.GetReco
 	if err != nil {
 		return nil, err
 	}
-
+	//I need to change this response in protobuf
 	return &pro.GetRecommendationsResponse{}, nil
 }
 
