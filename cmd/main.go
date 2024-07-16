@@ -11,6 +11,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
@@ -35,7 +36,7 @@ func main() {
 
 	log.Infof("Successfully connected to database")
 
-	authConn, err := grpc.NewClient(":50051")
+	authConn, err := grpc.NewClient(":50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Error connecting to authentication service: %v", err)
 	}

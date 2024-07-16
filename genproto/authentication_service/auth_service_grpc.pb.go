@@ -32,13 +32,10 @@ type AuthenticationServiceClient interface {
 	ResetPassword(ctx context.Context, in *ResetPasswordRequest, opts ...grpc.CallOption) (*ResetPasswordResponse, error)
 	// Changes the user's password
 	ChangePassword(ctx context.Context, in *ChangePasswordRequest, opts ...grpc.CallOption) (*ChangePasswordResponse, error)
-	VerifyResetCode(ctx context.Context, in *VerifyResetCodeRequest, opts ...grpc.CallOption) (*VerifyResetCodeResponse, error)
 	// Refreshes the access token using a refresh token
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
 	// Verifies the provided access token
 	VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenResponse, error)
-	// Cancels an access token, making it unusable
-	CancelToken(ctx context.Context, in *CancelTokenRequest, opts ...grpc.CallOption) (*CancelTokenResponse, error)
 	// Retrieves a list of users with optional pagination and sorting
 	GetUsersInfo(ctx context.Context, in *GetUsersInfoRequest, opts ...grpc.CallOption) (*GetUsersInfoResponse, error)
 	// Updates the specified user's information
@@ -103,15 +100,6 @@ func (c *authenticationServiceClient) ChangePassword(ctx context.Context, in *Ch
 	return out, nil
 }
 
-func (c *authenticationServiceClient) VerifyResetCode(ctx context.Context, in *VerifyResetCodeRequest, opts ...grpc.CallOption) (*VerifyResetCodeResponse, error) {
-	out := new(VerifyResetCodeResponse)
-	err := c.cc.Invoke(ctx, "/authentication_service.AuthenticationService/VerifyResetCode", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *authenticationServiceClient) RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error) {
 	out := new(RefreshTokenResponse)
 	err := c.cc.Invoke(ctx, "/authentication_service.AuthenticationService/RefreshToken", in, out, opts...)
@@ -124,15 +112,6 @@ func (c *authenticationServiceClient) RefreshToken(ctx context.Context, in *Refr
 func (c *authenticationServiceClient) VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenResponse, error) {
 	out := new(VerifyTokenResponse)
 	err := c.cc.Invoke(ctx, "/authentication_service.AuthenticationService/VerifyToken", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authenticationServiceClient) CancelToken(ctx context.Context, in *CancelTokenRequest, opts ...grpc.CallOption) (*CancelTokenResponse, error) {
-	out := new(CancelTokenResponse)
-	err := c.cc.Invoke(ctx, "/authentication_service.AuthenticationService/CancelToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -198,13 +177,10 @@ type AuthenticationServiceServer interface {
 	ResetPassword(context.Context, *ResetPasswordRequest) (*ResetPasswordResponse, error)
 	// Changes the user's password
 	ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error)
-	VerifyResetCode(context.Context, *VerifyResetCodeRequest) (*VerifyResetCodeResponse, error)
 	// Refreshes the access token using a refresh token
 	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error)
 	// Verifies the provided access token
 	VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenResponse, error)
-	// Cancels an access token, making it unusable
-	CancelToken(context.Context, *CancelTokenRequest) (*CancelTokenResponse, error)
 	// Retrieves a list of users with optional pagination and sorting
 	GetUsersInfo(context.Context, *GetUsersInfoRequest) (*GetUsersInfoResponse, error)
 	// Updates the specified user's information
@@ -236,17 +212,11 @@ func (UnimplementedAuthenticationServiceServer) ResetPassword(context.Context, *
 func (UnimplementedAuthenticationServiceServer) ChangePassword(context.Context, *ChangePasswordRequest) (*ChangePasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
 }
-func (UnimplementedAuthenticationServiceServer) VerifyResetCode(context.Context, *VerifyResetCodeRequest) (*VerifyResetCodeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyResetCode not implemented")
-}
 func (UnimplementedAuthenticationServiceServer) RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
 }
 func (UnimplementedAuthenticationServiceServer) VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyToken not implemented")
-}
-func (UnimplementedAuthenticationServiceServer) CancelToken(context.Context, *CancelTokenRequest) (*CancelTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CancelToken not implemented")
 }
 func (UnimplementedAuthenticationServiceServer) GetUsersInfo(context.Context, *GetUsersInfoRequest) (*GetUsersInfoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUsersInfo not implemented")
@@ -366,24 +336,6 @@ func _AuthenticationService_ChangePassword_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AuthenticationService_VerifyResetCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyResetCodeRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthenticationServiceServer).VerifyResetCode(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/authentication_service.AuthenticationService/VerifyResetCode",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthenticationServiceServer).VerifyResetCode(ctx, req.(*VerifyResetCodeRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _AuthenticationService_RefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RefreshTokenRequest)
 	if err := dec(in); err != nil {
@@ -416,24 +368,6 @@ func _AuthenticationService_VerifyToken_Handler(srv interface{}, ctx context.Con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthenticationServiceServer).VerifyToken(ctx, req.(*VerifyTokenRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthenticationService_CancelToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CancelTokenRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthenticationServiceServer).CancelToken(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/authentication_service.AuthenticationService/CancelToken",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthenticationServiceServer).CancelToken(ctx, req.(*CancelTokenRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -556,20 +490,12 @@ var AuthenticationService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AuthenticationService_ChangePassword_Handler,
 		},
 		{
-			MethodName: "VerifyResetCode",
-			Handler:    _AuthenticationService_VerifyResetCode_Handler,
-		},
-		{
 			MethodName: "RefreshToken",
 			Handler:    _AuthenticationService_RefreshToken_Handler,
 		},
 		{
 			MethodName: "VerifyToken",
 			Handler:    _AuthenticationService_VerifyToken_Handler,
-		},
-		{
-			MethodName: "CancelToken",
-			Handler:    _AuthenticationService_CancelToken_Handler,
 		},
 		{
 			MethodName: "GetUsersInfo",

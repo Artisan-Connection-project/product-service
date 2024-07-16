@@ -35,3 +35,8 @@
 {"level":"fatal","msg":"Error getting users info: pq: syntax error at or near \"=\"","time":"2024-07-14T14:30:31+05:00"}
 {"level":"fatal","msg":"Error getting users info: pq: syntax error at or near \"users\"","time":"2024-07-14T14:30:46+05:00"}
 {"level":"fatal","msg":"Error getting users info: no such user: \u003cnil\u003e","time":"2024-07-14T14:33:53+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T03:34:32+05:00"}
+{"level":"fatal","msg":"Error connecting to authentication service: grpc: no transport security set (use grpc.WithTransportCredentials(insecure.NewCredentials()) explicitly or set credentials)","time":"2024-07-16T03:34:32+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-16T03:35:00+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-16T03:35:00+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-16T03:35:00+05:00"}
