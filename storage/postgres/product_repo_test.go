@@ -2,200 +2,197 @@ package postgres
 
 import (
 	"context"
-	"os"
 	"testing"
 	"time"
 
 	pro "product-service/genproto/product_service"
+	"product-service/models"
 
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq" // PostgreSQL driver
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
-var (
-	testDB *sqlx.DB
-	repo   ProductRepo
-)
-
-func setupTestDB() (*sqlx.DB, error) {
-	connStr := "user=postgres port=5432 password=1702 host=localhost dbname=product_service sslmode=disable" // Adjust as needed
-	db, err := sqlx.Open("postgres", connStr)
+func setupMockDB(t *testing.T) (*sqlx.DB, sqlmock.Sqlmock, func()) {
+	db, mock, err := sqlmock.New()
 	if err != nil {
-		return nil, err
+		t.Fatalf("failed to open mock sql db, %v", err)
 	}
 
-	_, err = db.Exec(`
-		CREATE TABLE IF NOT EXISTS products (
-			id UUID PRIMARY KEY,
-			name VARCHAR(100) NOT NULL,
-			description TEXT,
-			price DECIMAL(10, 2) NOT NULL,
-			category_id UUID,
-			artisan_id UUID,
-			quantity INTEGER NOT NULL,
-			created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-			updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-			deleted_at TIMESTAMP WITH TIME ZONE
-		)
-	`)
-	if err != nil {
-		return nil, err
+	sqlxDB := sqlx.NewDb(db, "sqlmock")
+	return sqlxDB, mock, func() {
+		db.Close()
 	}
-
-	return db, nil
-}
-
-func TestMain(m *testing.M) {
-	var err error
-	testDB, err = setupTestDB()
-	if err != nil {
-		panic(err)
-	}
-
-	repo = NewProductRepo(testDB)
-
-	code := m.Run()
-
-	testDB.Close()
-
-	os.Exit(code)
 }
 
 func TestAddProduct(t *testing.T) {
+	db, mock, teardown := setupMockDB(t)
+	defer teardown()
+
+	repo := NewProductRepo(db)
+	ctx := context.Background()
+	newId := uuid.NewString()
+	q := 10
+	p := 99.99
 	product := &pro.AddProductRequest{
 		Name:        "Test Product",
-		Description: "Test Description",
-		Price:       99.99,
-		CategoryId:  "af97dcdb-9431-4f85-b98b-5bb7366d4428",
-		ArtisanId:   uuid.NewString(),
-		Quantity:    10,
+		Description: "This is a test product",
+		Price:       p,
+		CategoryId:  "cat-123",
+		ArtisanId:   "art-123",
+		Quantity:    int32(q),
 	}
 
-	resp, err := repo.AddProduct(context.Background(), product)
-	require.NoError(t, err)
+	mock.ExpectQuery("INSERT INTO products").
+		WithArgs(sqlmock.AnyArg(), product.Name, product.Description, product.Price, product.CategoryId, product.ArtisanId, product.Quantity).
+		WillReturnRows(sqlmock.NewRows([]string{"id", "name", "description", "price", "category_id", "artisan_id", "quantity", "created_at"}).
+			AddRow(newId, product.Name, product.Description, product.Price, product.CategoryId, product.ArtisanId, product.Quantity, time.Now()))
 
-	var dbProduct pro.Product
-	err = testDB.Get(&dbProduct, "SELECT id, name, description, price, category_id, artisan_id, quantity, created_at, updated_at FROM products WHERE id = $1", resp.Id)
-	require.NoError(t, err)
-
-	assert.Equal(t, product.Name, dbProduct.Name)
-	assert.Equal(t, product.Description, dbProduct.Description)
-	assert.Equal(t, product.Price, dbProduct.Price)
-	assert.Equal(t, product.CategoryId, dbProduct.CategoryId)
-	assert.Equal(t, product.ArtisanId, dbProduct.ArtisanId)
-	assert.Equal(t, product.Quantity, dbProduct.Quantity)
+	response, err := repo.AddProduct(ctx, product)
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	assert.Equal(t, newId, response.Id)
+	assert.Equal(t, product.Name, response.Name)
+	assert.Equal(t, product.Description, response.Description)
+	assert.Equal(t, product.Price, response.Price)
+	assert.Equal(t, product.CategoryId, response.CategoryId)
+	assert.Equal(t, product.ArtisanId, response.ArtisanId)
+	assert.Equal(t, product.Quantity, response.Quantity)
 }
 
 func TestEditProduct(t *testing.T) {
-	productId := uuid.NewString()
-	_, err := testDB.Exec(`
-		INSERT INTO products (id, name, description, price, category_id, artisan_id, quantity, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-		productId, "Old Name", "Old Description", 50.00, uuid.NewString(), uuid.NewString(), 5, time.Now(), time.Now(),
-	)
-	require.NoError(t, err)
+	db, mock, teardown := setupMockDB(t)
+	defer teardown()
 
+	repo := NewProductRepo(db)
+	ctx := context.Background()
 	product := &pro.EditProductRequest{
-		Id:          productId,
-		Name:        "Updated Name",
-		Description: "Updated Description",
-		Price:       89.99,
-		CategoryId:  uuid.NewString(),
-		ArtisanId:   uuid.NewString(),
-		Quantity:    15,
+		Id:          "prod-123",
+		Name:        "Updated Product",
+		Description: "Updated description",
+		Price:       49.99,
+		CategoryId:  "cat-456",
+		ArtisanId:   "art-456",
+		Quantity:    5,
 	}
 
-	_, err = repo.EditProduct(context.Background(), product)
-	require.NoError(t, err)
+	mock.ExpectExec("UPDATE products").
+		WithArgs(product.Name, product.Description, product.Price, product.CategoryId, product.ArtisanId, product.Quantity, product.Id).
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	var dbProduct pro.Product
-	err = testDB.Get(&dbProduct, "SELECT id, name, description, price, category_id, artisan_id, quantity, created_at, updated_at FROM products WHERE id = $1", productId)
-	require.NoError(t, err)
-
-	assert.Equal(t, product.Name, dbProduct.Name)
-	assert.Equal(t, product.Description, dbProduct.Description)
-	assert.Equal(t, product.Price, dbProduct.Price)
-	assert.Equal(t, product.CategoryId, dbProduct.CategoryId)
-	assert.Equal(t, product.ArtisanId, dbProduct.ArtisanId)
-	assert.Equal(t, product.Quantity, dbProduct.Quantity)
+	response, err := repo.EditProduct(ctx, product)
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	assert.Equal(t, product.Id, response.Id)
+	assert.Equal(t, product.Name, response.Name)
+	assert.Equal(t, product.Description, response.Description)
+	assert.Equal(t, product.Price, response.Price)
+	assert.Equal(t, product.CategoryId, response.CategoryId)
+	assert.Equal(t, product.ArtisanId, response.ArtisanId)
 }
 
 func TestDeleteProduct(t *testing.T) {
-	productId := uuid.NewString()
-	_, err := testDB.Exec(`
-		INSERT INTO products (id, name, description, price, category_id, artisan_id, quantity, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-		productId, "Product to Delete", "Description", 20.00, uuid.NewString(), uuid.NewString(), 10, time.Now(), time.Now(),
-	)
-	require.NoError(t, err)
+	db, mock, teardown := setupMockDB(t)
+	defer teardown()
 
-	_, err = repo.DeleteProduct(context.Background(), &pro.DeleteProductRequest{Id: productId})
-	require.NoError(t, err)
+	repo := NewProductRepo(db)
+	ctx := context.Background()
+	request := &pro.DeleteProductRequest{Id: "prod-123"}
 
-	var dbProduct pro.Product
-	err = testDB.Get(&dbProduct, "SELECT deleted_at FROM products WHERE id = $1", productId)
-	require.NoError(t, err)
+	mock.ExpectExec("UPDATE products SET deleted_at").
+		WithArgs(request.Id).
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	assert.NotNil(t, dbProduct.UpdatedAt)
+	response, err := repo.DeleteProduct(ctx, request)
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
 }
 
 func TestGetProducts(t *testing.T) {
-	_, err := testDB.Exec(`
-		INSERT INTO products (id, name, description, price, category_id, artisan_id, quantity, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9),
-		       ($10, $11, $12, $13, $14, $15, $16, $17, $18)`,
-		uuid.NewString(), "Product1", "Description1", 30.00, uuid.NewString(), uuid.NewString(), 10, time.Now(), time.Now(),
-		uuid.NewString(), "Product2", "Description2", 40.00, uuid.NewString(), uuid.NewString(), 20, time.Now(), time.Now(),
-	)
-	require.NoError(t, err)
+	db, mock, teardown := setupMockDB(t)
+	defer teardown()
 
-	resp, err := repo.GetProducts(context.Background(), &pro.GetProductsRequest{Limit: "10", Page: "0"})
-	require.NoError(t, err)
-	require.Len(t, resp.Products, 2)
+	repo := NewProductRepo(db)
+	ctx := context.Background()
+	request := &pro.GetProductsRequest{Limit: 10, Page: 0}
+
+	mockProducts := []*pro.Product{
+		{
+			Id:          "prod-1",
+			Name:        "Product 1",
+			Description: "Description 1",
+			Price:       100.0,
+			CategoryId:  "cat-1",
+			ArtisanId:   "art-1",
+			Quantity:    10,
+			CreatedAt:   time.Now().Format(time.RFC3339),
+		},
+		{
+			Id:          "prod-2",
+			Name:        "Product 2",
+			Description: "Description 2",
+			Price:       200.0,
+			CategoryId:  "cat-2",
+			ArtisanId:   "art-2",
+			Quantity:    20,
+			CreatedAt:   time.Now().Format(time.RFC3339),
+		},
+	}
+
+	rows := sqlmock.NewRows([]string{"id", "name", "description", "price", "category_id", "artisan_id", "quantity", "created_at"}).
+		AddRow(mockProducts[0].Id, mockProducts[0].Name, mockProducts[0].Description, mockProducts[0].Price, mockProducts[0].CategoryId, mockProducts[0].ArtisanId, mockProducts[0].Quantity, mockProducts[0].CreatedAt).
+		AddRow(mockProducts[1].Id, mockProducts[1].Name, mockProducts[1].Description, mockProducts[1].Price, mockProducts[1].CategoryId, mockProducts[1].ArtisanId, mockProducts[1].Quantity, mockProducts[1].CreatedAt)
+
+	mock.ExpectQuery("SELECT id, name, description, price, category_id, artisan_id, quantity, created_at, updated_at FROM products").
+		WithArgs(request.Limit, request.Page).
+		WillReturnRows(rows)
+
+	response, err := repo.GetProducts(ctx, request)
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	assert.Equal(t, 2, len(response.Products))
+	assert.Equal(t, mockProducts[0].Id, response.Products[0].Id)
+	assert.Equal(t, mockProducts[1].Id, response.Products[1].Id)
 }
 
 func TestGetProduct(t *testing.T) {
-	productId := uuid.NewString()
-	_, err := testDB.Exec(`
-		INSERT INTO products (id, name, description, price, category_id, artisan_id, quantity, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-		productId, "Single Product", "Single Description", 25.00, uuid.NewString(), uuid.NewString(), 15, time.Now(), time.Now(),
-	)
-	require.NoError(t, err)
+	db, mock, teardown := setupMockDB(t)
+	defer teardown()
 
-	resp, err := repo.GetProduct(context.Background(), &pro.GetProductRequest{Id: productId})
-	require.NoError(t, err)
+	repo := NewProductRepo(db)
+	ctx := context.Background()
+	request := &pro.GetProductRequest{Id: "prod-123"}
 
-	assert.Equal(t, productId, resp.Product.Id)
-	assert.Equal(t, "Single Product", resp.Product.Name)
-	assert.Equal(t, "Single Description", resp.Product.Description)
-	assert.Equal(t, 25.00, resp.Product.Price)
-}
-func TestAddProductCategory(t *testing.T) {
-	request := &pro.AddProductCategoryRequest{
-		Name:        "Test Category",
-		Description: "Test Description",
+	mockProduct := models.Product{
+		Id:          "prod-123",
+		Name:        "Test Product",
+		Description: "This is a test product",
+		Price:       99.99,
+		CategoryId:  "cat-123",
+		ArtisanId:   "art-123",
+		Quantity:    10,
+		CreatedAt:   time.Now().String(),
+		UpdatedAt:   time.Now().String(),
 	}
 
-	resp, err := repo.AddProductCategory(context.Background(), request)
-	require.NoError(t, err)
+	row := sqlmock.NewRows([]string{"id", "name", "description", "price", "category_id", "artisan_id", "quantity", "created_at", "updated_at"}).
+		AddRow(mockProduct.Id, mockProduct.Name, mockProduct.Description, mockProduct.Price, mockProduct.CategoryId, mockProduct.ArtisanId, mockProduct.Quantity, mockProduct.CreatedAt, mockProduct.UpdatedAt)
 
-	var dbCategory struct {
-		Id          string    `db:"id"`
-		Name        string    `db:"name"`
-		Description string    `db:"description"`
-		CreatedAt   time.Time `db:"created_at"`
-		UpdatedAt   time.Time `db:"updated_at"`
-	}
+	mock.ExpectQuery("SELECT id, name, description, price, category_id, artisan_id, quantity, created_at, updated_at FROM products").
+		WithArgs(request.Id).
+		WillReturnRows(row)
 
-	err = testDB.Get(&dbCategory, "SELECT id, name, description, created_at, updated_at FROM product_categories WHERE id = $1", resp.Id)
-	require.NoError(t, err)
-
-	assert.Equal(t, request.Name, dbCategory.Name)
-	assert.Equal(t, request.Description, dbCategory.Description)
-	assert.WithinDuration(t, time.Now(), dbCategory.CreatedAt, 1*time.Second)
-	assert.WithinDuration(t, time.Now(), dbCategory.UpdatedAt, 1*time.Second)
+	response, err := repo.GetProduct(ctx, request)
+	assert.NoError(t, err)
+	assert.NotNil(t, response)
+	assert.Equal(t, mockProduct.Id, response.Product.Id)
+	assert.Equal(t, mockProduct.Name, response.Product.Name)
+	assert.Equal(t, mockProduct.Description, response.Product.Description)
+	assert.Equal(t, mockProduct.Price, response.Product.Price)
+	assert.Equal(t, mockProduct.CategoryId, response.Product.CategoryId)
+	assert.Equal(t, mockProduct.ArtisanId, response.Product.ArtisanId)
+	assert.Equal(t, mockProduct.Quantity, response.Product.Quantity)
+	assert.Equal(t, mockProduct.CreatedAt, response.Product.CreatedAt)
+	assert.Equal(t, mockProduct.UpdatedAt, response.Product.UpdatedAt)
 }

@@ -11,3 +11,13 @@ type Product struct {
 	CreatedAt   string  `json:"created_at" db:"created_at"`
 	UpdatedAt   string  `json:"updated_at" db:"updated_at" `
 }
+
+type Order struct {
+	Id              string  `db:"id" json:"id"`
+	UserId          string  `db:"user_id" json:"user_id"`
+	TotalAmount     float64 `db:"total_amount" json:"total_amount"`
+	Status          string  `db:"status" json:"status"`
+	ShippingAddress string  `db:"shipping_address" json:"shipping_address"`
+	CreatedAt       string  `db:"created_at" json:"created_at"`
+	UpdatedAt       string  `db:"updated_at" json:"updated_at"`
+}

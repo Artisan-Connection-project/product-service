@@ -28,3 +28,16 @@
 	Comment   string  `protobuf:"bytes,5,opt,name=comment,proto3" json:"comment,omitempty" db:"comment,omitempty"`
 	CreatedAt string  `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty" db:"created_at,omitpty"`
 } -->
+<!-- type Order struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id              string  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" db:"id,omitempty"`
+	UserId          string  `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty" db:"user_id,omitempty"`
+	TotalAmount     float64 `protobuf:"fixed64,3,opt,name=total_amount,json=totalAmount,proto3" json:"total_amount,omitempty" db:"total_amount"`
+	Status          string  `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty" db:"status"`
+	ShippingAddress string  `protobuf:"bytes,5,opt,name=shipping_address,json=shippingAddress,proto3" json:"shipping_address,omitempty" db:"shippingAddres"`
+	CreatedAt       string  `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty" db:"created_at"`
+	UpdatedAt       string  `protobuf:"bytes,7,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty" db:"updated_at"`
+} -->

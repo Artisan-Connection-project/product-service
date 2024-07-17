@@ -141,31 +141,70 @@ func (p *productService) AddRating(c context.Context, rating *pro.AddRatingReque
 }
 
 func (p *productService) GetRatings(c context.Context, request *pro.GetRatingsRequest) (*pro.GetRatingsResponse, error) {
-	return p.productRepo.GetRatings(c, request)
+	res, err := p.productRepo.GetRatings(c, request)
+	if err != nil {
+		p.log.Errorf("failed to get ratings: %v", err)
+		return nil, err
+	}
+	return res, nil
 }
 
 func (p *productService) PlaceOrder(c context.Context, order *pro.PlaceOrderRequest) (*pro.PlaceOrderResponse, error) {
-	return p.productRepo.PlaceOrder(c, order)
+	res, err := p.productRepo.PlaceOrder(c, order)
+	if err != nil {
+		p.log.Errorf("failed to place order: %v", err)
+		return nil, err
+	}
+
+	return res, nil
 }
 
 func (p *productService) CancelOrder(c context.Context, request *pro.CancelOrderRequest) (*pro.CancelOrderResponse, error) {
-	return p.productRepo.CancelOrder(c, request)
+
+	res, err := p.productRepo.CancelOrder(c, request)
+	if err != nil {
+		p.log.Errorf("failed to cancel order: %v", err)
+		return nil, err
+	}
+
+	return res, nil
 }
 
 func (p *productService) UpdateOrderStatus(c context.Context, request *pro.UpdateOrderStatusRequest) (*pro.UpdateOrderStatusResponse, error) {
-	return p.productRepo.UpdateOrderStatus(c, request)
+	res, err := p.productRepo.UpdateOrderStatus(c, request)
+	if err != nil {
+		p.log.Errorf("failed to update order status: %v", err)
+		return nil, err
+	}
+	return res, nil
 }
 
 func (p *productService) GetOrders(c context.Context, request *pro.GetOrdersRequest) (*pro.GetOrdersResponse, error) {
-	return p.productRepo.GetOrders(c, request)
+	res, err := p.productRepo.GetOrders(c, request)
+	if err != nil {
+		p.log.Errorf("failed to get orders: %v", err)
+		return nil, err
+	}
+	return res, nil
 }
 
 func (p *productService) GetOrder(c context.Context, request *pro.GetOrderRequest) (*pro.GetOrderResponse, error) {
-	return p.productRepo.GetOrder(c, request)
+	res, err := p.productRepo.GetOrder(c, request)
+	if err != nil {
+		p.log.Errorf("failed to get order: %v", err)
+		return nil, err
+	}
+
+	return res, nil
 }
 
 func (p *productService) PayOrder(c context.Context, request *pro.PayOrderRequest) (*pro.PayOrderResponse, error) {
-	return p.productRepo.PayOrder(c, request)
+	res, err := p.productRepo.PayOrder(c, request)
+	if err != nil {
+		p.log.Errorf("failed to pay order: %v", err)
+		return nil, err
+	}
+	return res, nil
 }
 
 func (p *productService) CheckPaymentStatus(c context.Context, request *pro.CheckPaymentStatusRequest) (*pro.CheckPaymentStatusResponse, error) {

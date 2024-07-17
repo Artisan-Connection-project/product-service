@@ -1,3 +1,4 @@
+CREATE TYPE IF NOT EXISTS method as ENUM('credit-card', 'cash');
 CREATE TABLE payments (
     id UUID PRIMARY KEY,
     order_id UUID REFERENCES orders(id),

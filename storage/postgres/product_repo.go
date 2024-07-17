@@ -3,6 +3,8 @@ package postgres
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
+	"fmt"
 	"log"
 	pro "product-service/genproto/product_service"
 	"product-service/models"
@@ -242,6 +244,7 @@ func (r *productRepo) AddRating(c context.Context, rating *pro.AddRatingRequest)
 }
 
 func (r *productRepo) GetRatings(c context.Context, request *pro.GetRatingsRequest) (*pro.GetRatingsResponse, error) {
+
 	var ratings []*pro.Rating
 	query := `
 		SELECT id, product_id, user_id, rating, comment, created_at 
@@ -257,36 +260,114 @@ func (r *productRepo) GetRatings(c context.Context, request *pro.GetRatingsReque
 }
 
 func (r *productRepo) PlaceOrder(c context.Context, order *pro.PlaceOrderRequest) (*pro.PlaceOrderResponse, error) {
-	newId := uuid.NewString()
-	query := `
-		INSERT INTO orders (id, user_id, status, total_amount, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6)
-	`
-	_, err := r.db.ExecContext(c, query,
-		newId,
-		order.UserId,
-		order.Status,
-		order.TotalAmount,
-		time.Now(),
-		time.Now())
-
+	tx, err := r.db.Begin()
 	if err != nil {
 		return nil, err
 	}
+	defer tx.Rollback()
+	newOrderId := uuid.NewString()
 
-	return &pro.PlaceOrderResponse{Id: newId}, nil
+	query := `INSERT INTO orders(id, user_id, total_amount, status, shipping_address) VALUES($1, $2, $3, $4, $5)`
+	type shipping struct {
+		Street  string `json:"street"`
+		City    string `json:"city"`
+		Country string `json:"country"`
+		ZipCode string `json:"zip_code"`
+	}
+
+	shippingAddress := shipping{
+		Street: order.ShippingAddress,
+	}
+
+	shippingAddressJSON, err := json.Marshal(shippingAddress)
+	if err != nil {
+		tx.Rollback()
+		return nil, fmt.Errorf("error marshaling shipping address: %v", err)
+	}
+	res, err := tx.ExecContext(c, query, newOrderId, order.UserId, 0, order.Status, shippingAddressJSON)
+	if err != nil {
+		return nil, fmt.Errorf("error inserting order: %v", err)
+	}
+	if n, err := res.RowsAffected(); n == 0 || err != nil {
+		return nil, fmt.Errorf("error inserting order: %v", err)
+	}
+	items := order.GetItems()
+	if len(items) == 0 {
+		return nil, fmt.Errorf("empty order")
+	}
+	query = `
+		SELECT price, quantity FROM products WHERE id = $1 AND deleted_at IS NULL
+	`
+
+	var total_amount float64
+	for i, item := range items {
+		var quantity int
+		var price float64
+		row := tx.QueryRowContext(c, query, item.ProductId)
+		if row.Err() == sql.ErrNoRows {
+			return nil, fmt.Errorf("product not found")
+		}
+
+		err := row.Scan(&price, &quantity)
+
+		if err != nil {
+			return nil, fmt.Errorf("error scanning product: %v", err)
+		}
+		if quantity < int(item.Quantity) {
+			return nil, fmt.Errorf("not enough stock for item %s", item.ProductId)
+		}
+		items[i].Price = float32(price)
+		newOrderItemsId := uuid.NewString()
+		res, err := tx.ExecContext(c, "INSERT INTO order_items(id, order_id, product_id, quantity, price) VALUES($1, $2, $3, $4, $5)", newOrderItemsId, newOrderId, item.ProductId, item.Quantity, price)
+		if err != nil {
+			return nil, fmt.Errorf("error inserting order item: %v", err)
+		}
+		if n, err := res.RowsAffected(); n == 0 || err != nil {
+			return nil, fmt.Errorf("error inserting order item: %v", err)
+		}
+
+		total_amount += price * float64(item.Quantity)
+	}
+
+	query = `UPDATE orders SET total_amount = $1 WHERE id = $2`
+	res, err = tx.ExecContext(c, query, total_amount, newOrderId)
+	if err != nil {
+		tx.Rollback()
+		return nil, fmt.Errorf("error inserting order: %v", err)
+	}
+	if n, err := res.RowsAffected(); n == 0 || err != nil {
+		tx.Rollback()
+		return nil, fmt.Errorf("error inserting order: %v", err)
+	}
+	err = tx.Commit()
+	if err != nil {
+		return nil, fmt.Errorf("error committing transaction: %v", err)
+	}
+	return &pro.PlaceOrderResponse{
+		Id:              newOrderId,
+		UserId:          order.UserId,
+		TotalPrice:      float32(total_amount),
+		Status:          order.Status,
+		ShippingAddress: order.ShippingAddress,
+		Items:           items,
+		CreatedAt:       time.Now().Format("2006-01-02T15:04:05Z"),
+	}, nil
 }
 
 func (r *productRepo) CancelOrder(c context.Context, request *pro.CancelOrderRequest) (*pro.CancelOrderResponse, error) {
 	query := `
-		UPDATE orders SET status = 'cancelled', updated_at = now() WHERE id = $1 AND status = 'pending'
+		UPDATE orders SET status = 'canceled', updated_at = now() WHERE id = $1 AND status = 'pending'
 	`
 	_, err := r.db.ExecContext(c, query, request.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	return &pro.CancelOrderResponse{}, nil
+	return &pro.CancelOrderResponse{
+		Id:        request.Id,
+		Status:    "canceled",
+		UpdatedAt: time.Now().Format("2006-01-02 15:04:05"),
+	}, nil
 }
 
 func (r *productRepo) UpdateOrderStatus(c context.Context, request *pro.UpdateOrderStatusRequest) (*pro.UpdateOrderStatusResponse, error) {
@@ -298,24 +379,42 @@ func (r *productRepo) UpdateOrderStatus(c context.Context, request *pro.UpdateOr
 		return nil, err
 	}
 
-	return &pro.UpdateOrderStatusResponse{}, nil
+	return &pro.UpdateOrderStatusResponse{
+		Id:        request.Id,
+		Status:    request.Status,
+		UpdatedAt: time.Now().Format("2006-01-02 15:04:05"),
+	}, nil
 }
 
 // GetOrders retrieves a list of orders with pagination
 func (r *productRepo) GetOrders(c context.Context, request *pro.GetOrdersRequest) (*pro.GetOrdersResponse, error) {
-	var orders []*pro.Order
+	var orders []*models.Order
 	query := `
-		SELECT id, user_id, status, total_amount, created_at, updated_at 
-		FROM orders 
-		WHERE deleted_at IS NULL
-		LIMIT $1 OFFSET $2
-	`
+        SELECT id, user_id, status, total_amount, created_at, updated_at 
+        FROM orders 
+        WHERE deleted_at IS NULL
+        LIMIT $1 OFFSET $2
+    `
 	err := r.db.SelectContext(c, &orders, query, request.Limit, request.Page)
 	if err != nil {
 		return nil, err
 	}
 
-	return &pro.GetOrdersResponse{Orders: orders}, nil
+	var protoOrders []*pro.Order
+	for _, order := range orders {
+		protoOrder := &pro.Order{
+			Id:              order.Id,
+			UserId:          order.UserId,
+			TotalAmount:     order.TotalAmount,
+			Status:          order.Status,
+			ShippingAddress: order.ShippingAddress,
+			CreatedAt:       order.CreatedAt,
+			UpdatedAt:       order.UpdatedAt,
+		}
+		protoOrders = append(protoOrders, protoOrder)
+	}
+
+	return &pro.GetOrdersResponse{Orders: protoOrders}, nil
 }
 
 func (r *productRepo) GetOrder(c context.Context, request *pro.GetOrderRequest) (*pro.GetOrderResponse, error) {
@@ -337,45 +436,105 @@ func (r *productRepo) GetOrder(c context.Context, request *pro.GetOrderRequest) 
 }
 
 func (r *productRepo) PayOrder(c context.Context, request *pro.PayOrderRequest) (*pro.PayOrderResponse, error) {
+	var amount float32
+	row := r.db.QueryRowContext(c, "SELECT total_amount FROM orders WHERE id = $1 AND deleted_at IS NULL AND status = 'pending'", request.OrderId)
+	if row == nil {
+		return nil, fmt.Errorf("order not found")
+	}
+	err := row.Scan(&amount)
+	if err != nil {
+		return nil, err
+	}
+	transacId := uuid.NewString()
+	newPaymentId := uuid.NewString()
 	query := `
-		UPDATE orders SET status = 'paid', updated_at = now() WHERE id = $1 AND status = 'pending'
+			INSERT INTO payments (
+			id, 
+			order_id, 
+			amount, 
+			status,
+			transaction_id,
+			payment_method)
+			VALUES (
+			$1, 
+			$2, 
+			$3,
+			'paid', 
+			$4,
+            $5)
 	`
-	_, err := r.db.ExecContext(c, query, request.OrderId)
+	_, err = r.db.ExecContext(c, query,
+		newPaymentId,
+		request.OrderId,
+		amount,
+		transacId,
+		request.PaymentMethod,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	return &pro.PayOrderResponse{}, nil
+	return &pro.PayOrderResponse{
+		Id:            newPaymentId,
+		OrderId:       request.OrderId,
+		Amount:        float64(amount),
+		PaymentMethod: request.PaymentMethod,
+		Status:        "paid",
+		TransactionId: transacId,
+		CreatedAt:     time.Now().Format("2006-01-02 15:04:05"),
+	}, nil
 }
 
 func (r *productRepo) CheckPaymentStatus(c context.Context, request *pro.CheckPaymentStatusRequest) (*pro.CheckPaymentStatusResponse, error) {
-	var order pro.Order
-	err := r.db.GetContext(c, &order, `
-		SELECT status 
-		FROM orders 
-		WHERE id = $1
-	`, request.Id)
 
+	qury := `
+		SELECT id, order_id, amount, status, transaction_id, payment_method, created_at
+        FROM payments 
+        WHERE id = $1 AND order_id = $2 AND deleted_at IS NULL
+	`
+
+	var payment pro.Payment
+	row := r.db.QueryRowContext(c, qury, request.PaymentId, request.OrderId)
+	if row == nil {
+		return nil, fmt.Errorf("payment not found %v", row.Err())
+	}
+	err := row.Scan(&payment.Id, &payment.OrderId, &payment.Amount, &payment.Status, &payment.TransactionId, &payment.PaymentMethod, &payment.CreatedAt)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, nil // Order not found
-		}
 		return nil, err
 	}
-
-	return &pro.CheckPaymentStatusResponse{}, nil
+	return &pro.CheckPaymentStatusResponse{
+		Payment: &payment,
+	}, nil
 }
 
 func (r *productRepo) UpdateShippingInfo(c context.Context, request *pro.UpdateShippingInfoRequest) (*pro.UpdateShippingInfoResponse, error) {
+	updatedAt := time.Now()
 	query := `
-		UPDATE orders SET shipping_address = $1, updated_at = now() WHERE id = $2
+		UPDATE orders SET 
+		tracking_number = $1, 
+		carrier = $2, 
+		estimated_delivery_date = $3, 
+		updated_at = $4
+		WHERE id = $5
 	`
-	_, err := r.db.ExecContext(c, query, request.ShippingAddress, request.Id)
+	_, err := r.db.ExecContext(c, query,
+		request.TrackingNumber,
+		request.Carrier,
+		request.EstimatedDeliveryDate,
+		updatedAt,
+		request.OrderId,
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	return &pro.UpdateShippingInfoResponse{}, nil
+	return &pro.UpdateShippingInfoResponse{
+		OrderId:               request.OrderId,
+		TrackingNumber:        request.TrackingNumber,
+		Carrier:               request.Carrier,
+		EstimatedDeliveryDate: request.EstimatedDeliveryDate,
+		UpdatedAt:             updatedAt.Format("2006-01-02 15:04:05"),
+	}, nil
 }
 
 func (r *productRepo) AddArtisanCategory(c context.Context, request *pro.AddArtisanCategoryRequest) (*pro.AddArtisanCategoryResponse, error) {

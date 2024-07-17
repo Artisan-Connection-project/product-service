@@ -233,3 +233,70 @@
 {"level":"info","msg":"Successfully connected to database","time":"2024-07-17T01:08:22+05:00"}
 {"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T01:08:22+05:00"}
 {"level":"info","msg":"Initializing product service","time":"2024-07-17T01:08:22+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T08:50:22+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T08:50:22+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T08:50:22+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T08:59:21+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T08:59:21+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T08:59:21+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T09:02:39+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T09:02:39+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T09:02:39+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T09:06:12+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T09:06:12+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T09:06:12+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T09:21:29+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T09:21:29+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T09:21:29+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T09:22:17+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T09:22:17+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T09:22:17+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T09:22:42+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T09:22:42+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T09:22:42+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T09:24:01+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T09:24:01+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T09:24:01+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T12:55:35+05:00"}
+{"level":"fatal","msg":"Error starting gRPC server: listen tcp 127.0.0.1:50052: bind: address already in use","time":"2024-07-17T12:55:35+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T13:02:14+05:00"}
+{"level":"fatal","msg":"Error starting gRPC server: listen tcp 127.0.0.1:50052: bind: address already in use","time":"2024-07-17T13:02:14+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T13:09:40+05:00"}
+{"level":"fatal","msg":"Error starting gRPC server: listen tcp 127.0.0.1:50052: bind: address already in use","time":"2024-07-17T13:09:40+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T13:14:51+05:00"}
+{"level":"fatal","msg":"Error starting gRPC server: listen tcp 127.0.0.1:50052: bind: address already in use","time":"2024-07-17T13:14:51+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T13:16:23+05:00"}
+{"level":"fatal","msg":"Error starting gRPC server: listen tcp 127.0.0.1:50052: bind: address already in use","time":"2024-07-17T13:16:23+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T13:17:35+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T13:17:35+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T13:17:35+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T13:51:46+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T13:51:46+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T13:51:46+05:00"}
+{"level":"error","msg":"failed to get order: missing destination name user_id in *product_service.Order","time":"2024-07-17T13:52:18+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T14:24:01+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T14:24:01+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T14:24:01+05:00"}
+{"level":"error","msg":"failed to pay order: pq: column \"pending\" does not exist","time":"2024-07-17T14:25:08+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T14:26:09+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T14:26:09+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T14:26:09+05:00"}
+{"level":"error","msg":"failed to pay order: pq: invalid input syntax for type uuid: \"\"","time":"2024-07-17T14:26:11+05:00"}
+{"level":"error","msg":"failed to pay order: pq: invalid input syntax for type uuid: \"\"","time":"2024-07-17T14:27:59+05:00"}
+{"level":"error","msg":"failed to pay order: pq: invalid input syntax for type uuid: \"\"","time":"2024-07-17T14:28:29+05:00"}
+{"level":"error","msg":"failed to pay order: pq: invalid input syntax for type uuid: \"\"","time":"2024-07-17T14:28:29+05:00"}
+{"level":"error","msg":"failed to pay order: pq: invalid input syntax for type uuid: \"\"","time":"2024-07-17T14:28:29+05:00"}
+{"level":"error","msg":"failed to pay order: pq: invalid input syntax for type uuid: \"\"","time":"2024-07-17T14:28:30+05:00"}
+{"level":"error","msg":"failed to pay order: pq: invalid input syntax for type uuid: \"\"","time":"2024-07-17T14:28:30+05:00"}
+{"level":"error","msg":"failed to pay order: pq: invalid input syntax for type uuid: \"\"","time":"2024-07-17T14:28:30+05:00"}
+{"level":"error","msg":"failed to pay order: pq: column \"paid\" does not exist","time":"2024-07-17T14:29:19+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T14:29:38+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T14:29:38+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T14:29:38+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T15:15:27+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T15:15:27+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T15:15:27+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T15:49:03+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T15:49:03+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T15:49:03+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-17T17:05:54+05:00"}
