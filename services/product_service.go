@@ -113,6 +113,18 @@ func (p *productService) AddProductCategory(c context.Context, request *pro.AddP
 }
 
 func (p *productService) AddArtisanCategory(c context.Context, request *pro.AddArtisanCategoryRequest) (*pro.AddArtisanCategoryResponse, error) {
+
+	res, err := p.authService.GetUserInfo(c, &auth.GetUserInfoRequest{Id: request.ArtisanId})
+	if err != nil {
+		p.log.Errorf("user is not found: %v", err)
+		return nil, fmt.Errorf("user is not found: %v", err)
+	}
+
+	log.Println(res)
+	if res.User.UserType != "artisan" {
+		p.log.Errorf("user is not an artistant")
+		return nil, fmt.Errorf("user is not an artistant")
+	}
 	return p.productRepo.AddArtisanCategory(c, request)
 }
 
@@ -150,6 +162,11 @@ func (p *productService) GetRatings(c context.Context, request *pro.GetRatingsRe
 }
 
 func (p *productService) PlaceOrder(c context.Context, order *pro.PlaceOrderRequest) (*pro.PlaceOrderResponse, error) {
+	if !p.isValidUser(order.UserId) {
+		p.log.Errorf("user is not valid")
+		return nil, fmt.Errorf("user is not valid")
+	}
+
 	res, err := p.productRepo.PlaceOrder(c, order)
 	if err != nil {
 		p.log.Errorf("failed to place order: %v", err)
@@ -208,11 +225,21 @@ func (p *productService) PayOrder(c context.Context, request *pro.PayOrderReques
 }
 
 func (p *productService) CheckPaymentStatus(c context.Context, request *pro.CheckPaymentStatusRequest) (*pro.CheckPaymentStatusResponse, error) {
-	return p.productRepo.CheckPaymentStatus(c, request)
+	res, err := p.productRepo.CheckPaymentStatus(c, request)
+	if err != nil {
+		p.log.Errorf("failed to check payment status: %v", err)
+		return nil, err
+	}
+	return res, nil
 }
 
 func (p *productService) UpdateShippingInfo(c context.Context, request *pro.UpdateShippingInfoRequest) (*pro.UpdateShippingInfoResponse, error) {
-	return p.productRepo.UpdateShippingInfo(c, request)
+	res, err := p.productRepo.UpdateShippingInfo(c, request)
+	if err != nil {
+		p.log.Errorf("failed to update shipping info: %v", err)
+		return nil, err
+	}
+	return res, nil
 }
 
 func (p *productService) GetStatistics(c context.Context, request *pro.GetStatisticsRequest) (*pro.GetStatisticsResponse, error) {
@@ -229,4 +256,12 @@ func (p *productService) GetRecommendations(c context.Context, request *pro.GetR
 
 func (p *productService) GetArtisanRankings(c context.Context, request *pro.GetArtisanRankingsRequest) (*pro.GetArtisanRankingsResponse, error) {
 	return p.productRepo.GetArtisanRankings(c, request)
+}
+
+func (p *productService) isValidUser(id string) bool {
+	res, err := p.authService.GetUserInfo(context.Background(), &auth.GetUserInfoRequest{Id: id})
+	if err != nil || res.User == nil {
+		return false
+	}
+	return true
 }

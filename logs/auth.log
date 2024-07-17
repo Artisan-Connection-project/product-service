@@ -300,3 +300,37 @@
 {"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T15:49:03+05:00"}
 {"level":"info","msg":"Initializing product service","time":"2024-07-17T15:49:03+05:00"}
 {"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-17T17:05:54+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T19:44:28+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T19:44:28+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T19:44:28+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T19:58:47+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T19:58:47+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T19:58:47+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T20:01:08+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T20:01:08+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T20:01:08+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T20:09:21+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T20:09:21+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T20:09:21+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T20:15:45+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T20:15:45+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T20:15:45+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T20:20:48+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T20:20:48+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T20:20:48+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T20:22:38+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T20:22:38+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T20:22:38+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T20:24:16+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T20:24:16+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T20:24:16+05:00"}
+{"level":"error","msg":"failed to get product: missing destination name category_id in *[]*product_service.Product","time":"2024-07-17T22:02:42+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T22:03:57+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T22:03:57+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T22:03:57+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T22:07:15+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T22:07:15+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T22:07:15+05:00"}
+{"level":"info","msg":"Successfully connected to database","time":"2024-07-17T22:10:48+05:00"}
+{"level":"info","msg":"gRPC server started on localhost:50052","time":"2024-07-17T22:10:48+05:00"}
+{"level":"info","msg":"Initializing product service","time":"2024-07-17T22:10:48+05:00"}

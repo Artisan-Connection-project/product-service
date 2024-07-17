@@ -115,7 +115,7 @@ func TestGetProducts(t *testing.T) {
 
 	repo := NewProductRepo(db)
 	ctx := context.Background()
-	request := &pro.GetProductsRequest{Limit: 10, Page: 0}
+	request := &pro.GetProductsRequest{Limit: "10", Page: "0"}
 
 	mockProducts := []*pro.Product{
 		{

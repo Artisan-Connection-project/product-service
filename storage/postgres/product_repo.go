@@ -143,8 +143,8 @@ func (r *productRepo) GetProducts(c context.Context, request *pro.GetProductsReq
 }
 
 func (r *productRepo) GetProduct(c context.Context, request *pro.GetProductRequest) (*pro.GetProductResponse, error) {
-	var product models.Product
-
+	var product pro.Product
+	var pr float64
 	query := `
 		SELECT id, name, description, price, category_id, artisan_id, quantity, created_at, updated_at 
 		FROM products 
@@ -155,7 +155,7 @@ func (r *productRepo) GetProduct(c context.Context, request *pro.GetProductReque
 		&product.Id,
 		&product.Name,
 		&product.Description,
-		&product.Price,
+		&pr,
 		&product.CategoryId,
 		&product.ArtisanId,
 		&product.Quantity,
@@ -169,19 +169,19 @@ func (r *productRepo) GetProduct(c context.Context, request *pro.GetProductReque
 		return nil, err
 	}
 
-	productRes := &pro.Product{
-		Id:          product.Id,
-		Name:        product.Name,
-		Description: product.Description,
-		Price:       product.Price,
-		CategoryId:  product.CategoryId,
-		ArtisanId:   product.ArtisanId,
-		Quantity:    product.Quantity,
-		CreatedAt:   product.CreatedAt,
-		UpdatedAt:   product.UpdatedAt,
-	}
+	// productRes := &pro.Product{
+	// 	Id:          product.Id,
+	// 	Name:        product.Name,
+	// 	Description: product.Description,
+	// 	Price:       pr,
+	// 	CategoryId:  product.CategoryId,
+	// 	ArtisanId:   product.ArtisanId,
+	// 	Quantity:    product.Quantity,
+	// 	CreatedAt:   product.CreatedAt,
+	// 	UpdatedAt:   product.UpdatedAt,
+	// }
 
-	return &pro.GetProductResponse{Product: productRes}, nil
+	return &pro.GetProductResponse{Product: &product}, nil
 }
 
 func (r *productRepo) SearchProducts(ctx context.Context, req *pro.SearchProductsRequest) (*pro.SearchProductsResponse, error) {
@@ -538,22 +538,29 @@ func (r *productRepo) UpdateShippingInfo(c context.Context, request *pro.UpdateS
 }
 
 func (r *productRepo) AddArtisanCategory(c context.Context, request *pro.AddArtisanCategoryRequest) (*pro.AddArtisanCategoryResponse, error) {
+	createdAt := time.Now().Format("2006-01-02 15:04:05")
 	newId := uuid.NewString()
 	query := `
-		INSERT INTO artisan_categories (id, name, created_at, updated_at)
+		INSERT INTO artisan_categories (id, name, Description, created_at)
 		VALUES ($1, $2, $3, $4)
 	`
 	_, err := r.db.ExecContext(c, query,
 		newId,
 		request.Name,
-		time.Now(),
-		time.Now())
+		request.Description,
+		createdAt,
+	)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &pro.AddArtisanCategoryResponse{Id: newId}, nil
+	return &pro.AddArtisanCategoryResponse{
+		Id:          newId,
+		Name:        request.Name,
+		Description: request.Description,
+		CreatedAt:   createdAt,
+	}, nil
 }
 
 func (r *productRepo) AddProductCategory(c context.Context, request *pro.AddProductCategoryRequest) (*pro.AddProductCategoryResponse, error) {

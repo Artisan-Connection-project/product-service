@@ -1,6 +1,6 @@
 # product-service
 # need to edite mannually 
-<!-- type Product struct {
+type Product struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -14,7 +14,7 @@
 	Quantity    int32   `protobuf:"varint,7,opt,name=quantity,proto3" json:"quantity,omitempty" db:"quantity"`
 	CreatedAt   string  `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty" db:"created_at"`
 	UpdatedAt   string  `protobuf:"bytes,9,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty" db:"updated_at"`
-} -->
+}
 
 <!-- type Rating struct {
 	state         protoimpl.MessageState

@@ -45,6 +45,7 @@ type AuthenticationServiceClient interface {
 	// Deletes the specified user's information
 	DeleteUserInfo(ctx context.Context, in *DeleteUserInfoRequest, opts ...grpc.CallOption) (*DeleteUserInfoResponse, error)
 	GenerateToken(ctx context.Context, in *GenerateTokenRequest, opts ...grpc.CallOption) (*GenerateTokenResponse, error)
+	SendVerificationEmail(ctx context.Context, in *SendVerificationEmailRequest, opts ...grpc.CallOption) (*SendVerificationEmailResponse, error)
 }
 
 type authenticationServiceClient struct {
@@ -163,6 +164,15 @@ func (c *authenticationServiceClient) GenerateToken(ctx context.Context, in *Gen
 	return out, nil
 }
 
+func (c *authenticationServiceClient) SendVerificationEmail(ctx context.Context, in *SendVerificationEmailRequest, opts ...grpc.CallOption) (*SendVerificationEmailResponse, error) {
+	out := new(SendVerificationEmailResponse)
+	err := c.cc.Invoke(ctx, "/authentication_service.AuthenticationService/SendVerificationEmail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthenticationServiceServer is the server API for AuthenticationService service.
 // All implementations must embed UnimplementedAuthenticationServiceServer
 // for forward compatibility
@@ -190,6 +200,7 @@ type AuthenticationServiceServer interface {
 	// Deletes the specified user's information
 	DeleteUserInfo(context.Context, *DeleteUserInfoRequest) (*DeleteUserInfoResponse, error)
 	GenerateToken(context.Context, *GenerateTokenRequest) (*GenerateTokenResponse, error)
+	SendVerificationEmail(context.Context, *SendVerificationEmailRequest) (*SendVerificationEmailResponse, error)
 	mustEmbedUnimplementedAuthenticationServiceServer()
 }
 
@@ -232,6 +243,9 @@ func (UnimplementedAuthenticationServiceServer) DeleteUserInfo(context.Context, 
 }
 func (UnimplementedAuthenticationServiceServer) GenerateToken(context.Context, *GenerateTokenRequest) (*GenerateTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GenerateToken not implemented")
+}
+func (UnimplementedAuthenticationServiceServer) SendVerificationEmail(context.Context, *SendVerificationEmailRequest) (*SendVerificationEmailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendVerificationEmail not implemented")
 }
 func (UnimplementedAuthenticationServiceServer) mustEmbedUnimplementedAuthenticationServiceServer() {}
 
@@ -462,6 +476,24 @@ func _AuthenticationService_GenerateToken_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthenticationService_SendVerificationEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendVerificationEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).SendVerificationEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/authentication_service.AuthenticationService/SendVerificationEmail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).SendVerificationEmail(ctx, req.(*SendVerificationEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthenticationService_ServiceDesc is the grpc.ServiceDesc for AuthenticationService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -516,6 +548,10 @@ var AuthenticationService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GenerateToken",
 			Handler:    _AuthenticationService_GenerateToken_Handler,
+		},
+		{
+			MethodName: "SendVerificationEmail",
+			Handler:    _AuthenticationService_SendVerificationEmail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
